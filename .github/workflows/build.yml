@@ -34,7 +34,7 @@ jobs:
           NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "NDK_HOME=$NDK_HOME" >> $GITHUB_ENV
-          echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_ENV
+          echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$NDK_HOME/build/core/toolchains/" >> $GITHUB_ENV
       - name: Install NDK
         run: |
           wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
