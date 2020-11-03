@@ -14,7 +14,7 @@ exclude = [".github", "derive", "contrib", "services"]
 [lib]
 name = "lnpbp"
 path = "src/lib.rs"
-crate-type = ["dylib", "rlib", "staticlib"]
+crate-type = ["dylib", "rlib", "staticlib", "cdylib"]
 
 # Dependencies
 # ============
@@ -103,6 +103,9 @@ zmq = { version = "~0.9", features = ["vendored"] }
 # Use this for Android builds
 # Remove this once https://github.com/jean-airoldie/zeromq-src-rs/pull/15 got merged
 zeromq-src = { git = "https://github.com/LNP-BP/zeromq-src-rs", branch = "fix/cmake" }
+
+[target.'cfg(target_os="ios")'.dependencies]
+openssl = { version = "^0.10", features = ["vendored"] }
 
 # Features
 # ========
