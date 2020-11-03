@@ -28,15 +28,12 @@ jobs:
           wget -nv https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
           tar xf swig-4.0.1.tar.gz
           cd swig-4.0.1 && ./configure && make -j4 && sudo make install
-      - name: Install NDK
+      - name: set environment variables
         run: |
-          echo "ANDROID_SDK_ROOT=$GITHUB_WORKSPACE/sdk" >> $GITHUB_ENV
-          echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/$NDK_VERSION" >> $GITHUB_ENV
-          wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-          unzip commandlinetools-linux-6609375_latest.zip
-          mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
-          yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
-            "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
+          ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
+          NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "NDK_HOME=$NDK_HOME" >> $GITHUB_ENV
           echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_ENV
       - name: environment check
         run: |
@@ -44,6 +41,22 @@ jobs:
           echo $NDK_VERSION
           echo $ANDROID_SDK_ROOT
           echo $NDK_HOME
+          echo $PATH
+      - name: Install NDK
+        run: |
+          wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+          unzip commandlinetools-linux-6609375_latest.zip
+          mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
+          yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+            "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404" |grep -v '\[='; true
+      - name: environment check
+        run: |
+          echo $GITHUB_WORKSPACE
+          echo $NDK_VERSION
+          echo $ANDROID_SDK_ROOT
+          echo $NDK_HOME
+          echo $PATH
+          find / -name '*clang'
       - name: Build
         uses: actions-rs/cargo@v1
         with:
