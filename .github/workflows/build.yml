@@ -54,7 +54,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --features=vendored_openssl --target=aarch64-linux-android
+          args: --features=vendored_openssl --target=aarch64-linux-android --release
   ios:
     runs-on: macos-latest
     steps:
