@@ -54,7 +54,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --features=vendored_openssl --target=aarch64-linux-android --release
+          args: --all-features --target=aarch64-linux-android --release
   ios:
     runs-on: macos-latest
     env:
@@ -75,4 +75,4 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: lipo
-          args: --release
+          args: --all-features --release
