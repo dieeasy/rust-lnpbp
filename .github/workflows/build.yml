@@ -16,10 +16,10 @@ jobs:
       NDK_VERSION: 20.1.5948944
     steps:
       - uses: actions/checkout@v2
-      - name: Install rust stable
+      - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           override: true
           target: aarch64-linux-android
       - name: Install dependencies
