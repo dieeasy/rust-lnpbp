@@ -35,13 +35,6 @@ jobs:
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "NDK_HOME=$NDK_HOME" >> $GITHUB_ENV
           echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_ENV
-      - name: environment check
-        run: |
-          echo $GITHUB_WORKSPACE
-          echo $NDK_VERSION
-          echo $ANDROID_SDK_ROOT
-          echo $NDK_HOME
-          echo $PATH
       - name: Install NDK
         run: |
           wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
@@ -49,14 +42,6 @@ jobs:
           mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
           yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404" |grep -v '\[='; true
-      - name: environment check
-        run: |
-          echo $GITHUB_WORKSPACE
-          echo $NDK_VERSION
-          echo $ANDROID_SDK_ROOT
-          echo $NDK_HOME
-          echo $PATH
-          find / -name '*clang'
       - name: Build
         uses: actions-rs/cargo@v1
         with:
