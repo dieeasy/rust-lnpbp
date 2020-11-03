@@ -37,6 +37,7 @@ jobs:
           mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
           yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
+          echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin" >> $GITHUB_ENV
       - name: environment check
         run: |
           echo $GITHUB_WORKSPACE
@@ -48,7 +49,3 @@ jobs:
         with:
           command: build
           args: --target=aarch64-linux-android
-      #- name: set environment variables
-      #  run: |
-      #    export ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
-      #    export NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
