@@ -31,6 +31,10 @@ crate-type = ["dylib", "rlib", "staticlib", "cdylib"]
 # equivalence requirements (with '=' sign) since even dependencies patching will
 # not introduce risk of breaking the consensus and even security updates must
 # be done manually after through testing
+
+[build-dependencies]
+cbindgen = "^0.14"
+
 [dependencies]
 # Dependencies on other LNP/BP repositories
 # -----------------------------------------
