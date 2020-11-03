@@ -45,10 +45,11 @@ jobs:
       #  with:
       #    command: build
       #    args: --target=aarch64-linux-android
+      - name: set environment variables
+        run: |
+          echo "ANDROID_SDK_ROOT=$GITHUB_WORKSPACE/sdk" >> $GITHUB_ENV
+          echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/$NDK_VERSION" >> $GITHUB_ENV
       - name: environment check
-        env:
-          ANDROID_SDK_ROOT: ${{ env.GITHUB_WORKSPACE }}/sdk
-          NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}
         run: |
           echo $GITHUB_WORKSPACE
           echo $NDK_VERSION
