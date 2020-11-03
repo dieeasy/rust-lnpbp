@@ -55,7 +55,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all-features --target=aarch64-linux-android --release
+          args: --all-features --release
+      - name: Build for android
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all-features --release --target=aarch64-linux-android
   ios:
     runs-on: macos-latest
     env:
