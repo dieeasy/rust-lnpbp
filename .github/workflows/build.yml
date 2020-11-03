@@ -16,42 +16,39 @@ jobs:
       NDK_VERSION: 20.1.5948944
     steps:
       - uses: actions/checkout@v2
-      #- name: Install rust stable
-      #  uses: actions-rs/toolchain@v1
-      #  with:
-      #    toolchain: stable
-      #    override: true
-      #    target: aarch64-linux-android
-      #- name: Install dependencies
-      #  run: |
-      #    sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
-      #    wget -nv https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
-      #    tar xf swig-4.0.1.tar.gz
-      #    cd swig-4.0.1 && ./configure && make -j4 && sudo make install
-      #- name: Install NDK
-      #  run: |
-      #    export ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
-      #    export NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
-      #    wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-      #    unzip commandlinetools-linux-6609375_latest.zip
-      #    mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
-      #    yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
-      #      "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
-      #- name: Build
-      #  env:
-      #    ANDROID_SDK_ROOT: $GITHUB_WORKSPACE/sdk
-      #    NDK_HOME: $ANDROID_SDK_ROOT/ndk/$NDK_VERSION
-      #  uses: actions-rs/cargo@v1
-      #  with:
-      #    command: build
-      #    args: --target=aarch64-linux-android
-      - name: set environment variables
+      - name: Install rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          target: aarch64-linux-android
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
+          wget -nv https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
+          tar xf swig-4.0.1.tar.gz
+          cd swig-4.0.1 && ./configure && make -j4 && sudo make install
+      - name: Install NDK
         run: |
           echo "ANDROID_SDK_ROOT=$GITHUB_WORKSPACE/sdk" >> $GITHUB_ENV
           echo "NDK_HOME=$ANDROID_SDK_ROOT/ndk/$NDK_VERSION" >> $GITHUB_ENV
+          wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+          unzip commandlinetools-linux-6609375_latest.zip
+          mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
+          yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+            "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404"; true
       - name: environment check
         run: |
           echo $GITHUB_WORKSPACE
           echo $NDK_VERSION
           echo $ANDROID_SDK_ROOT
           echo $NDK_HOME
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --target=aarch64-linux-android
+      #- name: set environment variables
+      #  run: |
+      #    export ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
+      #    export NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
