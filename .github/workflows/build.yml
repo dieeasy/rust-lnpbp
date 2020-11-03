@@ -47,8 +47,8 @@ jobs:
       #    args: --target=aarch64-linux-android
       - name: environment check
         env:
-          ANDROID_SDK_ROOT: $( echo $GITHUB_WORKSPACE/sdk )
-          NDK_HOME: $( echo $ANDROID_SDK_ROOT/ndk/$NDK_VERSION )
+          ANDROID_SDK_ROOT: ${{ env.GITHUB_WORKSPACE }}/sdk
+          NDK_HOME: ${{ env.ANDROID_SDK_ROOT }}/ndk/${{ env.NDK_VERSION }}
         run: |
           echo $GITHUB_WORKSPACE
           echo $NDK_VERSION
