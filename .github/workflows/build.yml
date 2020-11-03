@@ -10,149 +10,24 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  features:
+  android:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        feature:
-          # Library components, one by one
-          - rgb
-          - lnp
-          # ... and used together
-          - rgb,lnp
-          # Cryptographic optionals
-          - keygen
-          - bulletproofs
-          - elgamal
-          # Core rust optionals
-          - serde
-          - tokio
-          - async
-          # Networking
-          - url
-          - websockets
-          # Full LNP strength, but without Serde
-          - lnp,websockets,url,tokio,async,keygen
-          # Full library strength, but without Serde
-          - rgb,lnp,tokio,websockets,url,async,keygen
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev
       - name: Install rust stable
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
-      - name: Feature ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --no-default-features --features=${{ matrix.feature }}
-      - name: Defaults + ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --features=${{ matrix.feature }}
-  platforms:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11.0 ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install linux dependencies
-        if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt-get install -y libzmq3-dev
-      - name: Install macos dependencies
-        if: startsWith(matrix.os, 'macos')
-        run: brew install pkg-config zmq
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Build with no defaults
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --no-default-features --all-features
-      - name: Build with defaults
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all-features
-  tor:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        feature:
-          - tor
-          - tor,url
-    steps:
-      - uses: actions/checkout@v2
+          target: aarch64-linux-android
       - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Feature ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --no-default-features --features=${{ matrix.feature }}
-      - name: Defaults + ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --features=${{ matrix.feature }}
-  toolchains:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        toolchain: [ nightly, beta, stable, 1.41.1 ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install rust ${{ matrix.toolchain }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-      - name: All features
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --workspace --all-targets --all-features
-  dependency:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install latest stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Create dependency
         run: |
-          cargo new dep_test
-          cp contrib/depCargo.toml dep_test/Cargo.toml
-          cd dep_test
-      - name: Build dependency
+          sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
+          wget https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
+          tar xf swig-4.0.1.tar.gz
+          cd swig-4.0.1 && ./configure && make -j4 && sudo make install
+      - name: Build
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --verbose
-      - name: Clean up
-        run: |
-          cd ..
-          rm -rf dep_test
+          args: --target=aarch64-linux-android
