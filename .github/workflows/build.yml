@@ -23,7 +23,6 @@ jobs:
         with:
           toolchain: stable
           override: true
-          target: aarch64-linux-android
       - name: Install dependencies
         run: |
           sudo apt-get install -y libpcre3-dev libssl-dev libzmq3-dev
@@ -34,7 +33,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all-features
+          args: --all-features --release
       - name: set environment variables
         run: |
           ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
@@ -56,11 +55,13 @@ jobs:
           mkdir $ANDROID_SDK_ROOT && mv tools $ANDROID_SDK_ROOT/
           yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404" |grep -v '\[='; true
+      - name: Add rust targets for android
+        run: rustup target add aarch64-linux-android
       - name: Build for android
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all-features --target=aarch64-linux-android
+          args: --all-features --release --target=aarch64-linux-android
   ios:
     runs-on: macos-latest
     env:
