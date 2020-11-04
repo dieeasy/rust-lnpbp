@@ -28,22 +28,14 @@ jobs:
           wget -nv https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz
           tar xf swig-4.0.1.tar.gz
           cd swig-4.0.1 && ./configure && make -j4 && sudo make install
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all-features --release
       - name: set environment variables
         run: |
-          export ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
-          export NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
-          export PATH="$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
-          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"
-          export CC="aarch64-linux-android21-clang"
-          export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/aarch64-linux-android"
-          export CXX="aarch64-linux-android21-clang++"
-          export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
-          export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-arm64"
+          ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
+          NDK_HOME="$ANDROID_SDK_ROOT/ndk/$NDK_VERSION"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
+          echo "NDK_HOME=$NDK_HOME" >> $GITHUB_ENV
+          echo "PATH=$PATH:$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:$NDK_HOME/build/core/toolchains/" >> $GITHUB_ENV
+          echo "CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang" >> $GITHUB_ENV
       - name: Install NDK
         run: |
           wget -nv https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
@@ -52,11 +44,13 @@ jobs:
           yes 2>/dev/null | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" "build-tools;29.0.3" "platforms;android-29" "ndk;$NDK_VERSION" "cmake;3.10.2.4988404" |grep -v '\[='; true
       - name: Build for android
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all-features --release --target=aarch64-linux-android
-
+        run: |
+          export CC="aarch64-linux-android21-clang"
+          export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/aarch64-linux-android"
+          export CXX="aarch64-linux-android21-clang++"
+          export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
+          export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-arm64"
+          cargo build --all-features --release --target=aarch64-linux-android
   ios:
     runs-on: macos-latest
     steps:
