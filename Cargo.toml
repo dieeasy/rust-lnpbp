@@ -14,7 +14,7 @@ exclude = [".github", "derive", "contrib", "services"]
 [lib]
 name = "lnpbp"
 path = "src/lib.rs"
-crate-type = ["dylib", "rlib", "staticlib"]
+crate-type = ["dylib", "rlib", "staticlib", "cdylib"]
 
 # Dependencies
 # ============
