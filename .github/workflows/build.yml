@@ -34,7 +34,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all-features --release
+          args: --all-features
       - name: set environment variables
         run: |
           ANDROID_SDK_ROOT="$GITHUB_WORKSPACE/sdk"
@@ -60,7 +60,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all-features --release --target=aarch64-linux-android
+          args: --all-features --target=aarch64-linux-android
   ios:
     runs-on: macos-latest
     env:
