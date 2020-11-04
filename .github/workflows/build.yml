@@ -59,13 +59,15 @@ jobs:
           echo "CXX=aarch64-linux-android21-clang++" >> $GITHUB_ENV
           echo "CXXFLAGS=$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include" >> $GITHUB_ENV
           echo "LDFLAGS=--sysroot=$NDK_HOME/platforms/android-21/arch-arm64" >> $GITHUB_ENV
+      - name: Build for android
+        run: cargo build --all-features --release --target=aarch64-linux-android
       #- name: Build for android
       #  run: CC="aarch64-linux-android21-clang" CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/aarch64-linux-android" CXX="aarch64-linux-android21-clang++" CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include" LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-arm64" cargo build --all-features --release --target=aarch64-linux-android
-      - name: Build for android
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --all-features --release --target=aarch64-linux-android
+      #- name: Build for android
+      #  uses: actions-rs/cargo@v1
+      #  with:
+      #    command: build
+      #    args: --all-features --release --target=aarch64-linux-android
   ios:
     runs-on: macos-latest
     env:
