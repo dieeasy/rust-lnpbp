@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dieeasy/cross ]
   pull_request:
     branches: [ master ]
 
@@ -10,178 +10,178 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  features:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        feature:
-          # Library components, one by one
-          - rgb
-          - lnp
-          # ... and used together
-          - rgb,lnp
-          # Cryptographic optionals
-          - keygen
-          - bulletproofs
-          - elgamal
-          # Core rust optionals
-          - serde
-          - tokio
-          - async
-          # Networking
-          - url
-          - websockets
-          # Full LNP strength, but without Serde
-          - lnp,websockets,url,tokio,async,keygen
-          # Full library strength, but without Serde
-          - rgb,lnp,tokio,websockets,url,async,keygen
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Feature ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --no-default-features --features=${{ matrix.feature }}
-      - name: Defaults + ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --features=${{ matrix.feature }}
-  services:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        feature:
-          - server
-          - client
-          - embedded
-          - cli
-          - server,serde
-          - client,serde
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Feature ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --manifest-path services/Cargo.toml --features=${{ matrix.feature }}
-  platforms:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11.0 ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install linux dependencies
-        if: startsWith(matrix.os, 'ubuntu')
-        run: sudo apt-get install -y libzmq3-dev
-      - name: Install macos dependencies
-        if: startsWith(matrix.os, 'macos')
-        run: brew install pkg-config zmq
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Build with no features
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --no-default-features
-      - name: Build with defaults
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --all-features
-  tor:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        feature:
-          - tor
-          - tor,url
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Feature ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --no-default-features --features=${{ matrix.feature }}
-      - name: Defaults + ${{ matrix.feature }}
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --features=${{ matrix.feature }}
-  toolchains:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        toolchain: [ nightly, beta, stable, 1.41.1 ]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install rust ${{ matrix.toolchain }}
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.toolchain }}
-          override: true
-      - name: All features
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --workspace --all-targets --all-features
-  dependency:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        run: sudo apt-get install -y libzmq3-dev libssl-dev
-      - name: Install latest stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Create dependency
-        run: |
-          cargo new dep_test
-          cp contrib/depCargo.toml dep_test/Cargo.toml
-          cd dep_test
-      - name: Build dependency
-        uses: actions-rs/cargo@v1
-        with:
-          command: check
-          args: --verbose
-      - name: Clean up
-        run: |
-          cd ..
-          rm -rf dep_test
+  #features:
+  #  runs-on: ubuntu-latest
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      feature:
+  #        # Library components, one by one
+  #        - rgb
+  #        - lnp
+  #        # ... and used together
+  #        - rgb,lnp
+  #        # Cryptographic optionals
+  #        - keygen
+  #        - bulletproofs
+  #        - elgamal
+  #        # Core rust optionals
+  #        - serde
+  #        - tokio
+  #        - async
+  #        # Networking
+  #        - url
+  #        - websockets
+  #        # Full LNP strength, but without Serde
+  #        - lnp,websockets,url,tokio,async,keygen
+  #        # Full library strength, but without Serde
+  #        - rgb,lnp,tokio,websockets,url,async,keygen
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: sudo apt-get install -y libzmq3-dev
+  #    - name: Install rust stable
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: stable
+  #        override: true
+  #    - name: Feature ${{ matrix.feature }}
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --no-default-features --features=${{ matrix.feature }}
+  #    - name: Defaults + ${{ matrix.feature }}
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --features=${{ matrix.feature }}
+  #services:
+  #  runs-on: ubuntu-latest
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      feature:
+  #        - server
+  #        - client
+  #        - embedded
+  #        - cli
+  #        - server,serde
+  #        - client,serde
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: sudo apt-get install -y libzmq3-dev
+  #    - name: Install rust stable
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: stable
+  #        override: true
+  #    - name: Feature ${{ matrix.feature }}
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --manifest-path services/Cargo.toml --features=${{ matrix.feature }}
+  #platforms:
+  #  runs-on: ${{ matrix.os }}
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      os: [ ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11.0 ]
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install linux dependencies
+  #      if: startsWith(matrix.os, 'ubuntu')
+  #      run: sudo apt-get install -y libzmq3-dev
+  #    - name: Install macos dependencies
+  #      if: startsWith(matrix.os, 'macos')
+  #      run: brew install pkg-config zmq
+  #    - name: Install rust stable
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: stable
+  #        override: true
+  #    - name: Build with no features
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --no-default-features
+  #    - name: Build with defaults
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --all-features
+  #tor:
+  #  runs-on: ubuntu-latest
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      feature:
+  #        - tor
+  #        - tor,url
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: sudo apt-get install -y libzmq3-dev libssl-dev
+  #    - name: Install rust stable
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: stable
+  #        override: true
+  #    - name: Feature ${{ matrix.feature }}
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --no-default-features --features=${{ matrix.feature }}
+  #    - name: Defaults + ${{ matrix.feature }}
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --features=${{ matrix.feature }}
+  #toolchains:
+  #  runs-on: ubuntu-latest
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      toolchain: [ nightly, beta, stable, 1.41.1 ]
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: sudo apt-get install -y libzmq3-dev libssl-dev
+  #    - name: Install rust ${{ matrix.toolchain }}
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: ${{ matrix.toolchain }}
+  #        override: true
+  #    - name: All features
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --workspace --all-targets --all-features
+  #dependency:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - name: Install dependencies
+  #      run: sudo apt-get install -y libzmq3-dev libssl-dev
+  #    - name: Install latest stable
+  #      uses: actions-rs/toolchain@v1
+  #      with:
+  #        toolchain: stable
+  #        override: true
+  #    - name: Create dependency
+  #      run: |
+  #        cargo new dep_test
+  #        cp contrib/depCargo.toml dep_test/Cargo.toml
+  #        cd dep_test
+  #    - name: Build dependency
+  #      uses: actions-rs/cargo@v1
+  #      with:
+  #        command: check
+  #        args: --verbose
+  #    - name: Clean up
+  #      run: |
+  #        cd ..
+  #        rm -rf dep_test
   android:
     runs-on: ubuntu-latest
     env:
@@ -226,12 +226,30 @@ jobs:
           export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
           export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-arm64"
           cargo check --all-features --target=aarch64-linux-android
-      - name: Build for x86_64-linux-android
+      #- name: Build for x86_64-linux-android
+      #  run: |
+      #    export CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER="$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"
+      #    export CC="x86_64-linux-android21-clang"
+      #    export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/x86_64-linux-android"
+      #    export CXX="x86_64-linux-android21-clang++"
+      #    export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
+      #    export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-x86_64"
+      #    cargo check --all-features --target=x86_64-linux-android
+      - name: Build for armv7-linux-androideabi
         run: |
-          export CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER="$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"
-          export CC="x86_64-linux-android21-clang"
-          export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/x86_64-linux-android"
-          export CXX="x86_64-linux-android21-clang++"
+          export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"
+          export CC="armv7a-linux-androideabi21-clang"
+          export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/arm-linux-androideabi"
+          export CXX="armv7a-linux-androideabi21-clang++"
           export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
-          export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-x86_64"
-          cargo check --all-features --target=x86_64-linux-android
+          export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-arm -L$NDK_HOME/sources/cxx-stl/llvm-libc++/libs/armeabi-v7a"
+          cargo check --all-features --release --target=armv7-linux-androideabi
+      #- name: Build for i686-linux-android
+      #  run: |
+      #    export CARGO_TARGET_I686_LINUX_ANDROID_LINKER="$NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android26-clang"
+      #    export CC="i686-linux-android21-clang"
+      #    export CFLAGS="--sysroot=$NDK_HOME/sysroot -I$NDK_HOME/sysroot/usr/include -I$NDK_HOME/sysroot/usr/include/i686-linux-android"
+      #    export CXX="i686-linux-android21-clang++"
+      #    export CXXFLAGS="$CFLAGS -nostdlib++ -I$NDK_HOME/sources/cxx-stl/llvm-libc++/include"
+      #    export LDFLAGS="--sysroot=$NDK_HOME/platforms/android-21/arch-x86"
+      #    cargo check --all-features --release --target=i686-linux-android
