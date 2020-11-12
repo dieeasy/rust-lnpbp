@@ -805,7 +805,7 @@ dependencies = [
  "inflate",
  "lazy_static",
  "lightning-invoice",
- "lnpbp_derive 0.2.0-beta.3",
+ "lnpbp_derive 0.2.0-beta.2",
  "miniscript",
  "num-derive",
  "num-traits 0.2.14",
