@@ -95,7 +95,7 @@ bitcoin = { version = "~0.25.0", features = ["rand"] }
 
 [target.'cfg(target_os="android")'.dependencies]
 zmq = { version = "~0.9", features = ["vendored"] }
-openssl = { features = ["vendored"] }
+openssl = { version = "0.10", features = ["vendored"] }
 
 # Features
 # ========
