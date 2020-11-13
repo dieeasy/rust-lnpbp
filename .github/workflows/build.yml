@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dieeasy/windows ]
   pull_request:
     branches: [ master ]
 
