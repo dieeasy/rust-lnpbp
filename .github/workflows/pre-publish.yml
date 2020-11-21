@@ -2,7 +2,7 @@ name: Pre-publishing check
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dieeasy/publish ]
   pull_request:
     branches: [ master ]
 
@@ -12,6 +12,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v2
       - name: Install rust stable
